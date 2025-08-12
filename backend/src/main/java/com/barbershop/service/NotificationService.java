@@ -39,7 +39,7 @@ public class NotificationService {
             "%s adlı müşteri %s tarihinde randevu talebinde bulundu. Hizmetler: %s",
             appointment.getCustomer().getFullName(),
             appointment.getAppointmentDate().format(dateFormatter),
-            String.join(", ", appointment.getServices() != null ? appointment.getServices() : List.of("Belirtilmemiş"))
+            appointment.getServices() != null && !appointment.getServices().trim().isEmpty() ? appointment.getServices() : "Belirtilmemiş"
         );
         
         Notification notification = new Notification(

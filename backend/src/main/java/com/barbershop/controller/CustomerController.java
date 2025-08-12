@@ -88,8 +88,42 @@ public class CustomerController {
     
     @GetMapping("/count")
     public ResponseEntity<Long> getCustomerCount() {
-        long count = customerService.getCustomerCount();
+        Long count = customerService.getCustomerCount();
         return ResponseEntity.ok(count);
+    }
+    
+    @PostMapping("/login")
+    public ResponseEntity<?> loginCustomer(@RequestBody LoginRequest loginRequest) {
+        try {
+            CustomerDTO customer = customerService.loginCustomer(loginRequest.getEmail(), loginRequest.getPassword());
+            return ResponseEntity.ok(customer);
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new ErrorResponse(e.getMessage()));
+        }
+    }
+    
+    // Login Request Class
+    public static class LoginRequest {
+        private String email;
+        private String password;
+        
+        public LoginRequest() {}
+        
+        public String getEmail() {
+            return email;
+        }
+        
+        public void setEmail(String email) {
+            this.email = email;
+        }
+        
+        public String getPassword() {
+            return password;
+        }
+        
+        public void setPassword(String password) {
+            this.password = password;
+        }
     }
     
     // Error Response Class

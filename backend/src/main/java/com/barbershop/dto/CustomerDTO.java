@@ -24,6 +24,9 @@ public class CustomerDTO {
     @Email(message = "Geçerli bir e-posta adresi girin")
     private String email;
     
+    @NotBlank(message = "Şifre alanı boş olamaz")
+    private String password;
+    
     private LocalDate birthDate;
     
     private List<String> preferredServices;
@@ -82,6 +85,14 @@ public class CustomerDTO {
     
     public void setEmail(String email) {
         this.email = email;
+    }
+    
+    public String getPassword() {
+        return password;
+    }
+    
+    public void setPassword(String password) {
+        this.password = password;
     }
     
     public LocalDate getBirthDate() {

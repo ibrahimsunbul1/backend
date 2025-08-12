@@ -98,9 +98,22 @@
 
 .services-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
   gap: 1rem;
   margin-top: 0.5rem;
+}
+
+.service-item {
+  border: 2px solid #B6B09F;
+  border-radius: 8px;
+  background: #EAE4D5;
+  transition: all 0.3s ease;
+  overflow: hidden;
+}
+
+.service-item:hover {
+  border-color: #000000;
+  background-color: #F2F2F2;
 }
 
 .service-checkbox {
@@ -108,16 +121,15 @@
   align-items: center;
   cursor: pointer;
   padding: 1rem;
-  border: 2px solid #B6B09F;
-  border-radius: 8px;
   transition: all 0.3s ease;
   position: relative;
-  background: #EAE4D5;
+  background: transparent;
+  border: none;
+  margin: 0;
 }
 
 .service-checkbox:hover {
-  border-color: #000000;
-  background-color: #F2F2F2;
+  background-color: rgba(0, 0, 0, 0.05);
 }
 
 .service-checkbox input[type="checkbox"] {
@@ -151,22 +163,47 @@
   font-size: 12px;
 }
 
-.service-info {
-  display: flex;
-  flex-direction: column;
-  flex-grow: 1;
-}
-
 .service-name {
   font-weight: 600;
   color: #000000;
-  margin-bottom: 0.25rem;
+  margin-left: 0.5rem;
 }
 
-.service-price {
-  color: #B6B09F;
+.price-input-container {
+  display: flex;
+  align-items: center;
+  padding: 0.75rem 1rem;
+  background: #F2F2F2;
+  border-top: 1px solid #B6B09F;
+  gap: 0.5rem;
+}
+
+.price-input {
+  flex: 1;
+  padding: 0.5rem;
+  border: 2px solid #B6B09F;
+  border-radius: 6px;
+  font-size: 1rem;
+  background: #EAE4D5;
+  transition: border-color 0.3s ease;
+}
+
+.price-input:focus {
+  outline: none;
+  border-color: #000000;
+  box-shadow: 0 0 0 2px rgba(0, 0, 0, 0.1);
+}
+
+.currency {
   font-weight: bold;
+  color: #B6B09F;
   font-size: 1.1rem;
+}
+
+.section-description {
+  color: #B6B09F;
+  margin-bottom: 1rem;
+  font-style: italic;
 }
 
 .working-hours {

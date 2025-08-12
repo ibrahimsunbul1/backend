@@ -27,10 +27,8 @@ public class Appointment {
     @NotNull(message = "Randevu tarihi gereklidir")
     private LocalDateTime appointmentDate;
     
-    @ElementCollection
-    @CollectionTable(name = "appointment_services", joinColumns = @JoinColumn(name = "appointment_id"))
-    @Column(name = "service_name")
-    private List<String> services;
+    @Column(name = "services", columnDefinition = "TEXT")
+    private String services;
     
     @Column(name = "total_price")
     private Double totalPrice;
@@ -121,11 +119,11 @@ public class Appointment {
         this.appointmentDate = appointmentDate;
     }
     
-    public List<String> getServices() {
+    public String getServices() {
         return services;
     }
     
-    public void setServices(List<String> services) {
+    public void setServices(String services) {
         this.services = services;
     }
     

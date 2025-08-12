@@ -1,6 +1,6 @@
 .customer-form-container {
   min-height: 100vh;
-  background: linear-gradient(135deg, #B6B09F 0%, #000000 100%);
+  background: linear-gradient(135deg, var(--primary-cream) 0%, var(--primary-brown) 100%);
   padding: 2rem;
   display: flex;
   align-items: center;
@@ -8,17 +8,17 @@
 }
 
 .customer-form {
-  background: #F2F2F2;
+  background: var(--primary-light);
   border-radius: 15px;
   padding: 3rem;
   box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
   max-width: 800px;
   width: 100%;
-  border: 2px solid #B6B09F;
+  border: 2px solid var(--primary-brown);
 }
 
 .customer-form h1 {
-  color: #000000;
+  color: var(--primary-black);
   text-align: center;
   margin-bottom: 1rem;
   font-size: 2.5rem;
@@ -27,9 +27,10 @@
 
 .form-description {
   text-align: center;
-  color: #B6B09F;
+  color: var(--primary-black);
   margin-bottom: 2rem;
   font-size: 1.1rem;
+  opacity: 0.8;
 }
 
 .form-row {
@@ -46,7 +47,7 @@
 .form-group label {
   display: block;
   margin-bottom: 0.5rem;
-  color: #000000;
+  color: var(--primary-black);
   font-weight: 600;
   font-size: 1rem;
 }
@@ -55,19 +56,20 @@
 .form-group textarea {
   width: 100%;
   padding: 0.75rem;
-  border: 2px solid #B6B09F;
+  border: 2px solid var(--primary-brown);
   border-radius: 8px;
   font-size: 1rem;
   transition: border-color 0.3s ease;
   box-sizing: border-box;
-  background: #EAE4D5;
+  background: var(--primary-light);
+  color: var(--primary-black);
 }
 
 .form-group input:focus,
 .form-group textarea:focus {
   outline: none;
-  border-color: #000000;
-  box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.2);
+  border-color: var(--primary-black);
+  box-shadow: 0 0 0 3px rgba(182, 176, 159, 0.3);
 }
 
 .form-group textarea {
@@ -78,25 +80,27 @@
 .services-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: 1rem;
-  margin-top: 0.5rem;
+  gap: 15px;
+  margin-top: 10px;
 }
 
 .service-checkbox {
   display: flex;
   align-items: center;
-  cursor: pointer;
-  padding: 0.75rem;
-  border: 2px solid #B6B09F;
+  padding: 12px;
+  border: 2px solid var(--primary-brown);
   border-radius: 8px;
+  cursor: pointer;
   transition: all 0.3s ease;
+  font-weight: 500;
   position: relative;
-  background: #EAE4D5;
+  background-color: var(--primary-cream);
+  color: var(--primary-black);
 }
 
 .service-checkbox:hover {
-  border-color: #000000;
-  background-color: #F2F2F2;
+  border-color: var(--primary-black);
+  background-color: var(--primary-light);
 }
 
 .service-checkbox input[type="checkbox"] {
@@ -106,16 +110,17 @@
 .checkmark {
   width: 20px;
   height: 20px;
-  border: 2px solid #B6B09F;
+  border: 2px solid var(--primary-brown);
   border-radius: 4px;
-  margin-right: 0.75rem;
+  margin-right: 12px;
   position: relative;
   transition: all 0.3s ease;
+  background-color: var(--primary-light);
 }
 
 .service-checkbox input[type="checkbox"]:checked + .checkmark {
-  background-color: #000000;
-  border-color: #000000;
+  background-color: var(--primary-brown);
+  border-color: var(--primary-brown);
 }
 
 .service-checkbox input[type="checkbox"]:checked + .checkmark::after {
@@ -124,28 +129,33 @@
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  color: white;
-  font-weight: bold;
+  color: var(--primary-light);
   font-size: 12px;
+  font-weight: bold;
+}
+
+.service-checkbox input[type="checkbox"]:checked {
+  color: var(--primary-brown);
 }
 
 .submit-btn {
-  width: 100%;
-  background: linear-gradient(135deg, #B6B09F 0%, #000000 100%);
-  color: #F2F2F2;
+  background-color: var(--primary-brown);
+  color: var(--primary-light);
   border: none;
-  padding: 1rem 2rem;
+  padding: 15px 30px;
   border-radius: 8px;
-  font-size: 1.1rem;
+  font-size: 18px;
   font-weight: 600;
   cursor: pointer;
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
-  margin-top: 1rem;
+  transition: all 0.3s ease;
+  width: 100%;
+  margin-top: 20px;
 }
 
 .submit-btn:hover {
+  background-color: var(--primary-black);
   transform: translateY(-2px);
-  box-shadow: 0 10px 20px rgba(69, 104, 130, 0.4);
+  box-shadow: 0 8px 25px rgba(182, 176, 159, 0.3);
 }
 
 .submit-btn:active {

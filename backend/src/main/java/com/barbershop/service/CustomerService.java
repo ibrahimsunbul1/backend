@@ -107,12 +107,25 @@ public class CustomerService {
         return customerRepository.countAllCustomers();
     }
     
+    @Transactional(readOnly = true)
+    public CustomerDTO loginCustomer(String email, String password) {
+        Customer customer = customerRepository.findByEmail(email)
+            .orElseThrow(() -> new RuntimeException("E-posta veya şifre hatalı"));
+        
+        if (!customer.getPassword().equals(password)) {
+            throw new RuntimeException("E-posta veya şifre hatalı");
+        }
+        
+        return convertToDTO(customer);
+    }
+    
     private Customer convertToEntity(CustomerDTO dto) {
         Customer customer = new Customer();
         customer.setFirstName(dto.getFirstName());
         customer.setLastName(dto.getLastName());
         customer.setPhone(dto.getPhone());
         customer.setEmail(dto.getEmail());
+        customer.setPassword(dto.getPassword());
         customer.setBirthDate(dto.getBirthDate());
         customer.setPreferredServices(dto.getPreferredServices());
         customer.setNotes(dto.getNotes());
@@ -126,6 +139,7 @@ public class CustomerService {
         dto.setLastName(customer.getLastName());
         dto.setPhone(customer.getPhone());
         dto.setEmail(customer.getEmail());
+        dto.setPassword(customer.getPassword());
         dto.setBirthDate(customer.getBirthDate());
         dto.setPreferredServices(customer.getPreferredServices());
         dto.setNotes(customer.getNotes());
@@ -139,6 +153,9 @@ public class CustomerService {
         customer.setLastName(dto.getLastName());
         customer.setPhone(dto.getPhone());
         customer.setEmail(dto.getEmail());
+        if (dto.getPassword() != null && !dto.getPassword().isEmpty()) {
+            customer.setPassword(dto.getPassword());
+        }
         customer.setBirthDate(dto.getBirthDate());
         customer.setPreferredServices(dto.getPreferredServices());
         customer.setNotes(dto.getNotes());

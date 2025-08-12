@@ -30,9 +30,13 @@ public class Customer {
     private String phone;
     
     @Email(message = "Geçerli bir e-posta adresi girin")
-    @Column(name = "email")
+    @Column(name = "email", unique = true)
     private String email;
-    
+
+    @NotBlank(message = "Şifre alanı boş olamaz")
+    @Column(name = "password", nullable = false)
+    private String password;
+
     @Column(name = "birth_date")
     private LocalDate birthDate;
     
@@ -113,7 +117,15 @@ public class Customer {
     public void setEmail(String email) {
         this.email = email;
     }
-    
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
     public LocalDate getBirthDate() {
         return birthDate;
     }

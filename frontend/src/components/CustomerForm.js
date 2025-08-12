@@ -7,18 +7,12 @@ const CustomerForm = () => {
     lastName: '',
     phone: '',
     email: '',
+    password: '',
     birthDate: '',
     preferredServices: [],
     notes: ''
   });
 
-  const services = [
-    'Saç Kesimi',
-    'Sakal Tıraşı',
-    'Saç + Sakal',
-    'Saç Yıkama',
-    'Styling'
-  ];
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -53,6 +47,35 @@ const CustomerForm = () => {
         const result = await response.json();
         console.log('Müşteri başarıyla kaydedildi:', result);
         alert('Müşteri kaydı başarıyla oluşturuldu!');
+        
+        // WebSocket bildirimi gönder
+        try {
+          const SockJS = require('sockjs-client');
+          const { Client } = require('@stomp/stompjs');
+          
+          const client = new Client({
+            webSocketFactory: () => new SockJS('http://localhost:8080/ws'),
+            onConnect: () => {
+              // İşletme sahibine yeni müşteri bildirimi gönder
+              client.publish({
+                destination: '/topic/notifications/1', // businessOwnerId = 1
+                body: JSON.stringify({
+                  type: 'NEW_CUSTOMER',
+                  message: `Yeni müşteri kaydı: ${result.firstName} ${result.lastName}`,
+                  customerId: result.id,
+                  timestamp: new Date().toISOString()
+                })
+              });
+              
+              // Bağlantıyı kapat
+              setTimeout(() => client.deactivate(), 1000);
+            }
+          });
+          
+          client.activate();
+        } catch (wsError) {
+          console.log('WebSocket bildirimi gönderilemedi:', wsError);
+        }
         
         // Formu temizle
         setFormData({
@@ -135,8 +158,22 @@ const CustomerForm = () => {
                 value={formData.email}
                 onChange={handleInputChange}
                 placeholder="ornek@email.com"
+                required
               />
             </div>
+          </div>
+          
+          <div className="form-group">
+            <label htmlFor="password">Şifre *</label>
+            <input
+              type="password"
+              id="password"
+              name="password"
+              value={formData.password}
+              onChange={handleInputChange}
+              placeholder="Şifrenizi girin"
+              required
+            />
           </div>
           
           <div className="form-group">
@@ -148,37 +185,7 @@ const CustomerForm = () => {
               value={formData.birthDate}
               onChange={handleInputChange}
             />
-          </div>
-          
-          <div className="form-group">
-            <label>Tercih Edilen Hizmetler</label>
-            <div className="services-grid">
-              {services.map(service => (
-                <label key={service} className="service-checkbox">
-                  <input
-                    type="checkbox"
-                    checked={formData.preferredServices.includes(service)}
-                    onChange={() => handleServiceChange(service)}
-                  />
-                  <span className="checkmark"></span>
-                  {service}
-                </label>
-              ))}
-            </div>
-          </div>
-          
-          <div className="form-group">
-            <label htmlFor="notes">Özel Notlar</label>
-            <textarea
-              id="notes"
-              name="notes"
-              value={formData.notes}
-              onChange={handleInputChange}
-              placeholder="Özel istekleriniz veya notlarınız..."
-              rows="4"
-            ></textarea>
-          </div>
-          
+          </div>        
           <button type="submit" className="submit-btn">
             Kayıt Ol
           </button>

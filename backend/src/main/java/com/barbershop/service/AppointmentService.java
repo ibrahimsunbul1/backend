@@ -196,7 +196,10 @@ public class AppointmentService {
         appointment.setCustomer(customer);
         appointment.setBusinessOwner(businessOwner);
         appointment.setAppointmentDate(dto.getAppointmentDate());
-        appointment.setServices(dto.getServices());
+        // Convert List<String> to comma-separated String
+        if (dto.getServices() != null && !dto.getServices().isEmpty()) {
+            appointment.setServices(String.join(", ", dto.getServices()));
+        }
         appointment.setNotes(dto.getNotes());
         appointment.setStatus(dto.getStatus() != null ? dto.getStatus() : Appointment.AppointmentStatus.PENDING);
         return appointment;
@@ -208,7 +211,12 @@ public class AppointmentService {
         dto.setCustomerId(appointment.getCustomer().getId());
         dto.setBusinessOwnerId(appointment.getBusinessOwner().getId());
         dto.setAppointmentDate(appointment.getAppointmentDate());
-        dto.setServices(appointment.getServices());
+        // Convert comma-separated String to List<String>
+        if (appointment.getServices() != null && !appointment.getServices().trim().isEmpty()) {
+            dto.setServices(List.of(appointment.getServices().split(",\\s*")));
+        } else {
+            dto.setServices(List.of());
+        }
         dto.setTotalPrice(appointment.getTotalPrice());
         dto.setNotes(appointment.getNotes());
         dto.setStatus(appointment.getStatus());
@@ -231,7 +239,10 @@ public class AppointmentService {
     
     private void updateAppointmentFields(Appointment appointment, AppointmentDTO dto) {
         appointment.setAppointmentDate(dto.getAppointmentDate());
-        appointment.setServices(dto.getServices());
+        // Convert List<String> to comma-separated String
+        if (dto.getServices() != null && !dto.getServices().isEmpty()) {
+            appointment.setServices(String.join(", ", dto.getServices()));
+        }
         appointment.setNotes(dto.getNotes());
         if (dto.getStatus() != null) {
             appointment.setStatus(dto.getStatus());

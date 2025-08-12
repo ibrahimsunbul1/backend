@@ -27,13 +27,16 @@ const BusinessOwnerForm = () => {
   });
 
   const availableServices = [
-    { name: 'Saç Kesimi', price: 50 },
-    { name: 'Sakal Tıraşı', price: 30 },
-    { name: 'Saç + Sakal', price: 70 },
-    { name: 'Saç Yıkama', price: 20 },
-    { name: 'Styling', price: 40 },
-    { name: 'Kaş Alma', price: 15 },
-    { name: 'Maske', price: 25 }
+    'Saç Kesimi',
+    'Sakal Tıraşı',
+    'Saç Yıkama',
+    'Saç Boyama',
+    'Perma',
+    'Saç Bakımı',
+    'Kaş Düzeltme',
+    'Yüz Bakımı',
+    'Makyaj',
+    'Cilt Bakımı'
   ];
 
   const days = {
@@ -54,12 +57,23 @@ const BusinessOwnerForm = () => {
     }));
   };
 
-  const handleServiceChange = (service) => {
+  const handleServiceChange = (serviceName) => {
     setFormData(prev => ({
       ...prev,
-      services: prev.services.find(s => s.name === service.name)
-        ? prev.services.filter(s => s.name !== service.name)
-        : [...prev.services, service]
+      services: prev.services.find(s => s.name === serviceName)
+        ? prev.services.filter(s => s.name !== serviceName)
+        : [...prev.services, { name: serviceName, price: 0 }]
+    }));
+  };
+
+  const handleServicePriceChange = (serviceName, price) => {
+    setFormData(prev => ({
+      ...prev,
+      services: prev.services.map(service => 
+        service.name === serviceName 
+          ? { ...service, price: parseFloat(price) || 0 }
+          : service
+      )
     }));
   };
 
@@ -76,11 +90,88 @@ const BusinessOwnerForm = () => {
     }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log('İşletme Bilgileri:', formData);
-    alert('İşletme kaydı başarıyla oluşturuldu!');
-    // Burada API çağrısı yapılabilir
+    
+    try {
+      // Hizmetleri Map formatına çevir
+      const servicesMap = {};
+      formData.services.forEach(service => {
+        servicesMap[service.name] = service.price;
+      });
+      
+      // Çalışma saatlerini Map formatına çevir
+      const workingHoursMap = {};
+      Object.keys(formData.workingHours).forEach(day => {
+        const dayInfo = formData.workingHours[day];
+        if (dayInfo.closed) {
+          workingHoursMap[days[day]] = 'Kapalı';
+        } else {
+          workingHoursMap[days[day]] = `${dayInfo.open} - ${dayInfo.close}`;
+        }
+      });
+      
+      const businessOwnerData = {
+        businessName: formData.businessName,
+        ownerName: formData.ownerName,
+        ownerSurname: formData.ownerSurname,
+        phone: formData.phone,
+        email: formData.email,
+        address: formData.address,
+        city: formData.city,
+        district: formData.district,
+        postalCode: formData.postalCode,
+        taxNumber: formData.taxNumber,
+        services: servicesMap,
+        workingHours: workingHoursMap,
+        description: formData.description
+      };
+      
+      const response = await fetch('http://localhost:8080/business-owners', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(businessOwnerData)
+      });
+      
+      if (response.ok) {
+        const result = await response.json();
+        alert('İşletme kaydı başarıyla oluşturuldu!');
+        console.log('Kayıt başarılı:', result);
+        
+        // Formu sıfırla
+        setFormData({
+          businessName: '',
+          ownerName: '',
+          ownerSurname: '',
+          phone: '',
+          email: '',
+          address: '',
+          city: '',
+          district: '',
+          postalCode: '',
+          taxNumber: '',
+          services: [],
+          workingHours: {
+            monday: { open: '09:00', close: '18:00', closed: false },
+            tuesday: { open: '09:00', close: '18:00', closed: false },
+            wednesday: { open: '09:00', close: '18:00', closed: false },
+            thursday: { open: '09:00', close: '18:00', closed: false },
+            friday: { open: '09:00', close: '18:00', closed: false },
+            saturday: { open: '09:00', close: '18:00', closed: false },
+            sunday: { open: '09:00', close: '18:00', closed: true }
+          },
+          description: ''
+        });
+      } else {
+        const errorData = await response.json();
+        alert(`Hata: ${errorData.message || 'İşletme kaydı oluşturulamadı'}`);
+      }
+    } catch (error) {
+      console.error('API Hatası:', error);
+      alert('Bağlantı hatası! Lütfen tekrar deneyin.');
+    }
   };
 
   return (
@@ -238,22 +329,40 @@ const BusinessOwnerForm = () => {
           
           {/* Hizmetler */}
           <div className="form-section">
-            <h2>Sunulan Hizmetler</h2>
+            <h2>Sunulan Hizmetler ve Fiyatları</h2>
+            <p className="section-description">Sunduğunuz hizmetleri seçin ve fiyatlarını belirleyin.</p>
             <div className="services-grid">
-              {availableServices.map(service => (
-                <label key={service.name} className="service-checkbox">
-                  <input
-                    type="checkbox"
-                    checked={formData.services.find(s => s.name === service.name) ? true : false}
-                    onChange={() => handleServiceChange(service)}
-                  />
-                  <span className="checkmark"></span>
-                  <div className="service-info">
-                    <span className="service-name">{service.name}</span>
-                    <span className="service-price">₺{service.price}</span>
+              {availableServices.map(serviceName => {
+                const selectedService = formData.services.find(s => s.name === serviceName);
+                const isSelected = !!selectedService;
+                return (
+                  <div key={serviceName} className="service-item">
+                    <label className="service-checkbox">
+                      <input
+                        type="checkbox"
+                        checked={isSelected}
+                        onChange={() => handleServiceChange(serviceName)}
+                      />
+                      <span className="checkmark"></span>
+                      <span className="service-name">{serviceName}</span>
+                    </label>
+                    {isSelected && (
+                      <div className="price-input-container">
+                        <input
+                          type="number"
+                          min="0"
+                          step="5"
+                          placeholder="Fiyat"
+                          value={selectedService?.price || ''}
+                          onChange={(e) => handleServicePriceChange(serviceName, e.target.value)}
+                          className="price-input"
+                        />
+                        <span className="currency">₺</span>
+                      </div>
+                    )}
                   </div>
-                </label>
-              ))}
+                );
+              })}
             </div>
           </div>
           

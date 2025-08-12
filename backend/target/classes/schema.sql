@@ -8,6 +8,7 @@ CREATE TABLE IF NOT EXISTS customers (
     last_name VARCHAR(50) NOT NULL,
     phone VARCHAR(11) UNIQUE NOT NULL,
     email VARCHAR(100) UNIQUE NOT NULL,
+    password VARCHAR(255) NOT NULL,
     birth_date DATE,
     preferred_services TEXT,
     notes TEXT,
